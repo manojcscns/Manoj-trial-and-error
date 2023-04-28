@@ -1,0 +1,20 @@
+description: >
+  Run a MATLAB build for your project.
+
+usage:
+  version: 2.1
+  orbs:
+    matlab: mathworks/matlab@0
+  jobs:
+    build:
+      machine:
+        image: ubuntu-2204:2022.07.1
+      steps:
+        - checkout
+        - matlab/install
+        - matlab/run-build:
+            tasks: test
+  workflows:
+    build:
+      jobs:
+        - build

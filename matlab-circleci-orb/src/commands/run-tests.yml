@@ -1,0 +1,121 @@
+description: >
+  Run all tests in a MATLAB project and generate test artifacts. MATLAB includes any files in your
+  project that have a Test label. If your pipeline does not leverage a MATLAB project, then MATLAB
+  includes all tests in the the root of your repository including its subfolders.
+
+parameters:
+  test-results-junit:
+    description: >
+      Path to write test results report in JUnit XML format.
+    type: string
+    default: ''
+  code-coverage-cobertura:
+    description: >
+      Path to write code coverage report in Cobertura XML format.
+    type: string
+    default: ''
+  code-coverage-html:
+    description: >
+      Path to write code coverage report in HTML format.
+    type: string
+    default: ''
+  source-folder:
+    description: >
+      Location of the folder containing source code, relative to the project root folder. The
+      specified folder and its subfolders are added to the top of the MATLAB search path. To
+      generate a code coverage report, MATLAB uses only the source code in the specified folder and
+      its subfolders. You can specify multiple folders using a colon-separated or a
+      semicolon-separated list.
+    type: string
+    default: ''
+  select-by-folder:
+    description: >
+      Location of the folder used to select test suite elements, relative to the project root folder.
+      To generate a test suite, MATLAB uses only the tests in the specified folder and its subfolders.
+      You can specify multiple folders using a colon-separated or a semicolon-separated list.
+    type: string
+    default: ''
+  select-by-tag:
+    description: >
+      Test tag used to select test suite elements. To generate a test suite, MATLAB uses only the test elements
+      with the specified tag.
+    type: string
+    default: ''
+  model-coverage-cobertura:
+    description: >
+      Path to write model coverage report in Cobertura XML format.
+    type: string
+    default: ''
+  model-coverage-html:
+    description: >
+      Path to write model coverage report in HTML format.
+    type: string
+    default: ''
+  test-results-simulink-test:
+    description: >
+      Path to export Simulink Test Manager results in MLDATX format.
+    type: string
+    default: ''
+  test-results-html:
+    description: >
+      Path to write test results report in HTML format.
+    type: string
+    default: ''
+  test-results-pdf:
+    description: >
+      Path to write test results report in PDF format.
+    type: string
+    default: ''
+  no-output-timeout:
+    description: >
+      Elapsed time the tests can run without output. The string is a decimal with unit suffix,
+      such as “20m”, “1.25h”, “5s”. The default is 10 minutes and the maximum is governed by the
+      maximum time a job is allowed to run.
+    type: string
+    default: 10m
+  strict:
+    description: >
+      Whether to apply strict checks when running the tests. For example, the command generates a
+      qualification failure if a test issues a warning.
+    type: boolean
+    default: false
+  use-parallel:
+    description: >
+      Whether to run tests in parallel (requires Parallel Computing Toolbox). This feature might
+      not be compatible with certain arguments, in which case, tests run in serial regardless of
+      the specified value.
+    type: boolean
+    default: false
+  output-detail:
+    description: >
+      Display level for event details produced by the test run, specified as 'None', 'Terse', 'Concise', 'Detailed', or 'Verbose'.
+    type: string
+    default: ''
+  logging-level:
+    description: >
+      Maximum verbosity level for logged diagnostics included for the test run, specified as 'None', 'Terse', 'Concise', 'Detailed', or 'Verbose'.
+    type: string
+    default: ''
+
+steps:
+  - run:
+      name: Run MATLAB tests
+      environment:
+        PARAM_TEST_RESULTS_JUNIT: <<parameters.test-results-junit>>
+        PARAM_CODE_COVERAGE_COBERTURA: <<parameters.code-coverage-cobertura>>
+        PARAM_CODE_COVERAGE_HTML: <<parameters.code-coverage-html>>
+        PARAM_SOURCE_FOLDER: <<parameters.source-folder>>
+        PARAM_SELECT_BY_FOLDER: <<parameters.select-by-folder>>
+        PARAM_SELECT_BY_TAG: <<parameters.select-by-tag>>
+        PARAM_MODEL_COVERAGE_COBERTURA: <<parameters.model-coverage-cobertura>>
+        PARAM_MODEL_COVERAGE_HTML: <<parameters.model-coverage-html>>
+        PARAM_TEST_RESULTS_SIMULINK_TEST: <<parameters.test-results-simulink-test>>
+        PARAM_TEST_RESULTS_HTML: <<parameters.test-results-html>>
+        PARAM_TEST_RESULTS_PDF: <<parameters.test-results-pdf>>
+        PARAM_STRICT: <<parameters.strict>>
+        PARAM_USE_PARALLEL: <<parameters.use-parallel>>
+        PARAM_OUTPUT_DETAIL: <<parameters.output-detail>>
+        PARAM_LOGGING_LEVEL: <<parameters.logging-level>>
+      command: <<include(scripts/run-tests.sh)>>
+      shell: bash
+      no_output_timeout: <<parameters.no-output-timeout>>
